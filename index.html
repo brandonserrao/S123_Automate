@@ -7,6 +7,7 @@
   <script>
     let itemId = prompt("Enter ItemID of Survey: ", "ItemId goes here");
     let clientId = prompt("Enter your ClientId for this web app: ", "yourClientID");
+    let test_globalId = prompt("for testing, input a globalId", "globalId");
     
 let data = { onLoadMessage: "onFormLoaded fired", onSubmitMessage: "onFormSubmitted fired",
 }
@@ -16,6 +17,8 @@ let webformOptions = {
     container: 'mywebformDIV',
     itemId: itemId,
     portalUrl: '',
+    mode: 'edit',
+    globalId: test_globalId,
 
 onFormLoaded: (data) => {
 	window.alert('custom webformOptions message: ', "onFormLoaded fired");
