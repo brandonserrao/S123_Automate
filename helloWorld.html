@@ -1,0 +1,32 @@
+<head>
+  <script src='https://survey123.arcgis.com/api/jsapi'></script>
+  <!––https://community.esri.com/groups/survey123/blog/2020/03/03/introducing-the-survey123-web-app-javascript-api-->
+</head>
+<body>
+  <div id='mywebformDIV'></div>
+  <script>
+    let itemId = prompt("Enter ItemID of Survey: ", "ItemId goes here");
+    let clientId = prompt("Enter your ClientId for this web app: ", "yourClientID");
+    
+let data = { onLoadMessage: "onFormLoaded fired", onSubmitMessage: "onFormSubmitted fired",
+}
+
+let webformOptions = {
+    clientId: clientId,
+    container: 'mywebformDIV',
+    itemId: itemId,
+    portalUrl: '',
+
+onFormLoaded: (data) => {
+	window.alert('custom webformOptions message: ', "onFormLoaded fired");
+	},
+onFormSubmitted: (data) => {
+	window.alert('custom webformOptions message: ', "onFormSubmitted fired");
+	},
+};
+let webform = new Survey123WebForm(webformOptions);
+
+  </script>
+</body>
+
+
