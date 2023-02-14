@@ -64,7 +64,7 @@
           //increment iterator
           i++;
           // submit form; to trigger 
-          webform.submitForm();
+          setTimeout(() => {webform.submitForm();}, 3000)
           },
         onFormSubmitted: (x) => {
           // window.alert("onFormSubmitted fired", x);
