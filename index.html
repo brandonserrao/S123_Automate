@@ -38,6 +38,13 @@
         console.log('record: ', record);
         //compose URL //add globalId
         let parameters = "&" + "globalId=" + record.globalId;
+
+        let answers = {};
+        for (const [field, val] of Object.entries(record)) {
+          if (field !== "globalId" && val != "") {
+            answers[field] = val;
+            }
+        }
         
         /* obsoleted by .setQuestionValues webform method
         //compose URL //add fields values to URL suffix
@@ -77,7 +84,9 @@
         onFormLoaded: (x) => {
           // window.alert("onFormLoaded fired; ", x);
           console.warn("onFormLoaded fired; ", x);
-          webform.setQuestionValue(record);
+          console.log("answers", answers);
+          webform.setQuestionValue(answers);
+          // webform.setQuestionValue(record);
           //increment iterator
           i++;
           // submit form; to trigger 
