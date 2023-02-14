@@ -1,34 +1,123 @@
 <head>
   <script src='https://survey123.arcgis.com/api/jsapi'></script>
+  <script src="papaparse.min.js"></script>
   <!––https://community.esri.com/groups/survey123/blog/2020/03/03/introducing-the-survey123-web-app-javascript-api-->
 </head>
 <body>
+  <div>
+    <input type="file" id="fileInput" accept=".csv" />
+  </div>
   <div id='mywebformDIV'></div>
+
   <script>
-    let itemId = prompt("Enter ItemID of Survey: ", "ItemId goes here");
-    let clientId = prompt("Enter your ClientId for this web app: ", "yourClientID");
-    let test_globalId = prompt("for testing, input a globalId", "globalId");
+    //
+    const baseURL = "https://survey123.arcgis.com/share/0ba47e28d394431c8fa50817f49c3b4a";
+    const mode = "?mode=edit";
+    //the idea: choose a CSV with the update data from device
+    //parse to json with PapaParse into Json object
+    //onchange initiate the processing
+
+    //
+    let itemId = '0ba47e28d394431c8fa50817f49c3b4a';
+    let clientId = '8LE0ok09WuRWTo6J';
+    // let test_globalId = "d38823cd-b80f-4dbd-8543-f39db8c5dd4b";
+
+    //empty data variable to collect parsed results
+    let data = [];
+
+
+    const fileInput = document.getElementById('fileInput');
+    fileInput.addEventListener('change', onFileInput, false);
+    // fileInput.addEventListener('input', ()=>{console.log('fileInput oninput fired')});
+
+    function runUpdate(data, i=0) {
+      //the main function, recursively called after initial run, by the onSubmitForm listener of the webform
+
+        //get record
+        let record = data[i];
+        console.log('record: ', record);
+        //compose URL //add globalId
+        let parameters = "&" + "globalId=" + record.globalId;
+        //compose URL //add fields values to URL suffix
+        for (const [field, val] of Object.entries(record)) {
+          if (field !== "globalId") {
+            let stringValue = val;
+            //parse space characters into ansi for url
+            stringValue = val.replaceAll(" ","%20");
+            //append fields to url
+            parameters += `&field:${field}=${stringValue}`;
+            }
+        }
+        /* 
+        for (const field in record.fields) {
+          if (Object.hasOwnProperty.call(record.fields, field)) {
+            const value = record.fields[field];
+            parameters += `&field:${field}=${value}`;
+          }
+        } */
+        
+        //compose URL 
+        let fullURL = baseURL + mode + parameters;
+        console.log('fullURL', fullURL);
+
+
+
+      //instantiate webform with composed URL
+      let webform = new Survey123WebForm({
+            clientId: clientId,
+            container: 'mywebformDIV',
+            itemId: itemId,
+            portalUrl: '',
+            mode: 'edit',
+            globalId: record.globalId, //test_globalId, //placeholder
+
+        onFormLoaded: (x) => {
+          // window.alert("onFormLoaded fired; ", x);
+          console.warn("onFormLoaded fired; ", x);
+          //increment iterator
+          i++;
+          // submit form; to trigger 
+          webform.submitForm();
+          },
+        onFormSubmitted: (x) => {
+          // window.alert("onFormSubmitted fired", x);
+          console.warn("onFormSubmitted fired", x);
+          if (i < data.length) {
+            //recursive call to continue updating by creating the next form
+            runUpdate(data, i);
+            //get rid of the now unused iframe from the submitted form
+            document.getElementById('mywebformDIV').firstElementChild.remove();
+            } else {
+              console.log('iteration complete, i: ', i);
+            }
+          }
+          },
+      )
+
+
+    }
+
+    function onFileInput(event) {
+      alert('onFileInput fired');
+      console.log('fileInput onchange fired', event);
+
+      //get file
+      let file = this.files[0];
+      //parse passed CSV file into JSON
+      Papa.parse(file, {
+        header: true,
+        dynamicTyping: false,
+        error: () => {alert('PapaParse parsing encountered an error')},
+        complete: (results) => {
+          console.log('PapaParse file parsing results: ', results);
+
+          data = results.data;
+          runUpdate(data);
+      }});
+      
+      
+    }
     
-let data = { onLoadMessage: "onFormLoaded fired", onSubmitMessage: "onFormSubmitted fired",
-}
-
-let webformOptions = {
-    clientId: clientId,
-    container: 'mywebformDIV',
-    itemId: itemId,
-    portalUrl: '',
-    mode: 'edit',
-    globalId: test_globalId,
-
-onFormLoaded: (data) => {
-	window.alert('custom webformOptions message: ', "onFormLoaded fired");
-	},
-onFormSubmitted: (data) => {
-	window.alert('custom webformOptions message: ', "onFormSubmitted fired");
-	},
-};
-let webform = new Survey123WebForm(webformOptions);
-
   </script>
 </body>
 
