@@ -73,7 +73,7 @@
             //recursive call to continue updating by creating the next form
             runUpdate(data, i);
             //get rid of the now unused iframe from the submitted form
-            document.getElementById('mywebformDIV').firstElementChild.remove();
+            setTimeout(() => {document.getElementById('mywebformDIV').firstElementChild.remove();}, 3000)
             } else {
               console.log('iteration complete, i: ', i);
             }
