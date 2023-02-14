@@ -13,14 +13,10 @@
     //
     const baseURL = "https://survey123.arcgis.com/share/0ba47e28d394431c8fa50817f49c3b4a";
     const mode = "?mode=edit";
-    //the idea: choose a CSV with the update data from device
-    //parse to json with PapaParse into Json object
-    //onchange initiate the processing
 
     //
     let itemId = '0ba47e28d394431c8fa50817f49c3b4a';
-    let clientId = '8LE0ok09WuRWTo6J';
-    // let test_globalId = "d38823cd-b80f-4dbd-8543-f39db8c5dd4b";
+    let clientId = '8LE0ok09WuRWTo6J
 
     //empty data variable to collect parsed results
     let data = [];
@@ -28,10 +24,8 @@
 
     const fileInput = document.getElementById('fileInput');
     fileInput.addEventListener('change', onFileInput, false);
-    // fileInput.addEventListener('input', ()=>{console.log('fileInput oninput fired')});
 
     function runUpdate(data, i=0) {
-      //the main function, recursively called after initial run, by the onSubmitForm listener of the webform
 
         //get record
         let record = data[i];
@@ -48,13 +42,6 @@
             parameters += `&field:${field}=${stringValue}`;
             }
         }
-        /* 
-        for (const field in record.fields) {
-          if (Object.hasOwnProperty.call(record.fields, field)) {
-            const value = record.fields[field];
-            parameters += `&field:${field}=${value}`;
-          }
-        } */
         
         //compose URL 
         let fullURL = baseURL + mode + parameters;
