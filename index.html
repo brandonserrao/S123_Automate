@@ -61,6 +61,8 @@
         onFormLoaded: (x) => {
           // window.alert("onFormLoaded fired; ", x);
           console.warn("onFormLoaded fired; ", x);
+          //set question answer values
+          webform.setQuestionValue(record);
           //increment iterator
           i++;
           // submit form; to trigger 
